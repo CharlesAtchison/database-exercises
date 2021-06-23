@@ -9,7 +9,8 @@ SELECT
 FROM albums;
 
 -- This will return the unique artist names
-SELECT DISTINCT COUNT(name) as number_of_unique_artist_names
+SELECT 
+	COUNT(DISTINCT artist) as number_of_unique_artist_names
 	
 FROM albums;
 
@@ -63,5 +64,5 @@ WHERE sales < 20;
 SELECT
 	name
 FROM albums
-WHERE genre = "Rock";	
+WHERE UPPER(genre) LIKE '%ROCK%';	
 
