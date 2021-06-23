@@ -1,1 +1,1 @@
-There are 4 of the required exercise query results within this repo that are the saved as .sql files.
+The two files are the required exercises that we completed in class.
