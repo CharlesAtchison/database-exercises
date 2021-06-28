@@ -53,7 +53,7 @@ ORDER BY first_name;
 
 /*Using your query that generates a username for all of the employees, generate a count employees for each unique username. Are there any duplicate usernames? BONUS: How many duplicate usernames are there?
 
-YES there are
+YES
  */
 
 SELECT 
@@ -66,7 +66,7 @@ FROM employees
 GROUP BY username
 ORDER BY unique_username_count DESC;
 
--- BONUS Number of duplicate usernames is 6
+-- BONUS Number of duplicate usernames is 14152
 
 SELECT (COUNT(LOWER((CONCAT(SUBSTR(first_name, 1, 1),
  SUBSTR(last_name, 1, 4), '_',
