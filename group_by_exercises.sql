@@ -48,22 +48,32 @@ GROUP BY last_name;
 SELECT first_name, gender, COUNT(gender) as count_of_gender
 FROM employees
 WHERE first_name IN ('Irena', 'Vidya', 'Maya')
-GROUP BY first_name, gender;
+GROUP BY first_name, gender
+ORDER BY first_name;
 
 /*Using your query that generates a username for all of the employees, generate a count employees for each unique username. Are there any duplicate usernames? BONUS: How many duplicate usernames are there?
+
+YES there are
  */
 
 SELECT 
-CONCAT(SUBSTRING(LOWER(first_name), 1, 1), SUBSTRING(LOWER(last_name), 1, 4), '_', SUBSTRING(birth_date, 6, 2), SUBSTRING(birth_date, 3, 2)) AS username, 
-COUNT(CONCAT(SUBSTRING(LOWER(first_name), 1, 1), SUBSTRING(LOWER(last_name), 1, 4), '_', SUBSTRING(birth_date, 6, 2), SUBSTRING(birth_date, 3, 2))) AS unique_username_count,
-first_name, last_name, birth_date 
+LOWER((CONCAT(SUBSTR(first_name, 1, 1),
+ SUBSTR(last_name, 1, 4), '_',
+  SUBSTR(birth_date, 6, 2),
+   SUBSTR(birth_date, 3, 2)))) AS username,
+COUNT(*) as unique_username_count
 FROM employees
-GROUP BY first_name, last_name, birth_date
+GROUP BY username
 ORDER BY unique_username_count DESC;
 
--- Number of duplicate usernames is 6
+-- BONUS Number of duplicate usernames is 6
 
-SELECT CONCAT(SUBSTRING(LOWER(first_name), 1, 1), SUBSTRING(LOWER(last_name), 1, 4), '_', SUBSTRING(birth_date, 6, 2), SUBSTRING(birth_date, 3, 2)) AS unique_username_count, first_name, last_name, birth_date
-FROM employees
-GROUP BY first_name, last_name, birth_date, unique_username_count HAVING COUNT(*) > 1;
+SELECT (COUNT(LOWER((CONCAT(SUBSTR(first_name, 1, 1),
+ SUBSTR(last_name, 1, 4), '_',
+  SUBSTR(birth_date, 6, 2),
+   SUBSTR(birth_date, 3, 2))))) - COUNT(DISTINCT(LOWER((CONCAT(SUBSTR(first_name, 1, 1),
+ SUBSTR(last_name, 1, 4), '_',
+  SUBSTR(birth_date, 6, 2),
+   SUBSTR(birth_date, 3, 2))))))) AS dulicates
+   FROM employees
 
