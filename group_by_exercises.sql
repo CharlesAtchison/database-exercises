@@ -74,6 +74,6 @@ SELECT (COUNT(LOWER((CONCAT(SUBSTR(first_name, 1, 1),
    SUBSTR(birth_date, 3, 2))))) - COUNT(DISTINCT(LOWER((CONCAT(SUBSTR(first_name, 1, 1),
  SUBSTR(last_name, 1, 4), '_',
   SUBSTR(birth_date, 6, 2),
-   SUBSTR(birth_date, 3, 2))))))) AS dulicates
-   FROM employees
+   SUBSTR(birth_date, 3, 2))))))) AS duplicate__username_count
+   FROM employees;
 
