@@ -377,65 +377,109 @@ LEFT JOIN
 /*
 Bonus Who is the highest paid employee within each department.
  */
-
-SELECT t1.dept_name AS 'Department Name', t1.salary AS 'Salary',
-CONCAT(first_name,' ', last_name) AS 'Employee Name'
-FROM (SELECT
-	dept_no, salary, dept_name, first_name, last_name
-FROM
-	salaries
-JOIN
-	dept_emp 
+ 
+ -- Part 1
+SELECT
+		salary, dept_name, first_name, last_name
+	FROM
+		salaries
+	JOIN
+		dept_emp 
 	USING(emp_no)
-JOIN 
-	departments 
+	JOIN 
+		departments 
 	USING(dept_no)
-JOIN 
-	employees
+	JOIN 
+		employees
 	USING(emp_no)
-WHERE 
-	dept_emp.to_date >= NOW()
-AND 
-	salaries.to_date >= NOW()) AS t1
+	WHERE 
+		dept_emp.to_date >= NOW()
+	AND 
+		salaries.to_date >= NOW();
+
+
+-- Part 2
+SELECT dept_name, MAX(salary) as max_salary
+	FROM 
+		(
+		SELECT
+			salary, dept_name, first_name, last_name
+		FROM
+			salaries
+		JOIN
+			dept_emp 
+		USING(emp_no)
+		JOIN 
+			departments 
+		USING(dept_no)
+		JOIN 
+			employees
+		USING(emp_no)
+		WHERE 
+			dept_emp.to_date >= NOW()
+			AND 
+			salaries.to_date >= NOW()
+		) as t2
+	GROUP BY dept_name;
+
+SELECT 
+	t1.dept_name AS 'Department Name',
+	t1.salary AS 'Salary',
+	CONCAT(first_name,' ', last_name) AS 'Employee Name'
+FROM 
+	(
+	-- Part 1 which builds the base table to employee names, salaries and dept names
+	SELECT
+		salary, dept_name, first_name, last_name
+	FROM
+		salaries
+	JOIN
+		dept_emp 
+	USING(emp_no)
+	JOIN 
+		departments 
+	USING(dept_no)
+	JOIN 
+		employees
+	USING(emp_no)
+	WHERE 
+		dept_emp.to_date >= NOW()
+	AND 
+		salaries.to_date >= NOW()
+	) AS t1
+	
 INNER JOIN
 	(
-		SELECT dept_name, MAX(salary) as max_salary
-		FROM (SELECT
-	dept_no, salary, dept_name, first_name, last_name
-FROM
-	salaries
-JOIN
-	dept_emp 
-	USING(emp_no)
-JOIN 
-	departments 
-	USING(dept_no)
-JOIN 
-	employees
-	USING(emp_no)
-WHERE 
-	dept_emp.to_date >= NOW()
-AND 
-	salaries.to_date >= NOW()) as t2
-		GROUP BY dept_name
-	) t2
-	ON t1.dept_name = t2.dept_name AND t1.salary = t2.max_salary
-ORDER BY 'Department Name';
-
-
-
-	
-
-
-
-
-
-
-			
-		
-
-
-
+	-- Part 2 builds another table to cross reference the previous part with the calculated max salaries
+	SELECT dept_name, MAX(salary) as max_salary
+	FROM 
+		(
+		SELECT
+			salary, dept_name, first_name, last_name
+		FROM
+			salaries
+		JOIN
+			dept_emp 
+		USING(emp_no)
+		JOIN 
+			departments 
+		USING(dept_no)
+		JOIN 
+			employees
+		USING(emp_no)
+		WHERE 
+			dept_emp.to_date >= NOW()
+			AND 
+			salaries.to_date >= NOW()
+		) as t2
+	GROUP BY dept_name
+	) AS t2
+	-- Joins both tables based on the dept_name and matches the salary & department name with the max_salary
+	ON 
+	t1.dept_name = t2.dept_name
+	AND
+	t1.salary = t2.max_salary
+ORDER BY 'Department Name' DESC;
 
 
 
