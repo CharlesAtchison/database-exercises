@@ -20,8 +20,13 @@ Find all the titles ever held by all current employees with the first name Aamod
 */
 
 SELECT *
-FROM titles, employees
-WHERE employees.first_name = 'Aamod';
+FROM titles
+JOIN dept_emp
+ON dept_emp.emp_no = titles.emp_no
+	AND dept_emp.to_date >= NOW()
+JOIN employees
+ON employees.emp_no = titles.emp_no
+ 	AND employees.first_name = 'Aamod';
 
 /*
 How many people in the employees table are no longer working for the company? Give the answer in a comment in your code.
