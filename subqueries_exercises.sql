@@ -9,7 +9,7 @@ SELECT *
 FROM employees
 JOIN dept_emp
 ON dept_emp.emp_no = employees.emp_no
-	AND to_date < NOW()
+	AND to_date >= NOW()
 WHERE employees.hire_date = (
 SELECT hire_date
 FROM employees
