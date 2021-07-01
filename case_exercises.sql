@@ -3,32 +3,14 @@ USE employees;
 /* 
 Write a query that returns all employees (emp_no), their department number, their start date, their end date, and a new column 'is_current_employee' that is a 1 if the employee is still with the company and 0 if not.
 */
-
-select 
-first_name, last_name, dept_no, hire_date, to_date,
-
-# If the employee is still working will assign '1' to the is_current_employee column
-case
-when to_date >= now() then 1
-else 0
-end as is_current_employee
-
-from employees
-join dept_emp
-on dept_emp.emp_no = employees.emp_no;
-
-/*
-Write a query that returns all employee names (previous and current), and a new column 'alpha_group' that returns 'A-H', 'I-Q', or 'R-Z' depending on the first letter of their last name.
-*/
-
-select first_name, last_name,
-case
-when substring(last_name,1,1) >= 'a' and substring(last_name,1,1) <= 'h' then 'A-H'
-when substring(last_name,1,1) >= 'i' and substring(last_name,1,1) <= 'q' then 'I-Q'
-when substring(last_name,1,1) >= 'r' and substring(last_name,1,1) <= 'z' then 'R-Z'
-else null
-end as alpha_group
-from employees;
+SELECT de.emp_no,
+    MAX(dnum.dept_no) as "Department Number",
+    MIN(de.from_date) as "Start Date", MAX(de.to_date) as "End Date",
+    IF (MAX(de.to_date) > NOW(), TRUE, FALSE) is_current_employee
+FROM dept_emp as de
+LEFT JOIN (SELECT dept_no, emp_no FROM dept_emp
+WHERE to_date = (SELECT MAX(to_date) FROM dept_emp)) dnum using (emp_no)
+GROUP BY emp_no;
 
 /* 
 How many employees (current or previous) were born in each decade?
@@ -87,6 +69,6 @@ group by dept_group
 order by avg_salary
 
 	
-
+ 
 
 
