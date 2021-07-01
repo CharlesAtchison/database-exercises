@@ -32,11 +32,15 @@ ON employees.emp_no = titles.emp_no
 How many people in the employees table are no longer working for the company? Give the answer in a comment in your code.
 */
 
-SELECT COUNT(*)
-FROM employees
-JOIN dept_emp
-ON dept_emp.emp_no = employees.emp_no
-AND to_date < NOW();
+select count(*)
+from employees
+where emp_no not in (
+select distinct(employees.emp_no)
+from employees
+join dept_emp
+on dept_emp.emp_no = employees.emp_no
+and dept_emp.to_date >= now());
+
 
 /*
 Find all the current department managers that are female. List their names in a comment in your code.
