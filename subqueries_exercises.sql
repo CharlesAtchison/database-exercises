@@ -13,7 +13,7 @@ ON dept_emp.emp_no = employees.emp_no
 WHERE employees.hire_date = (
 SELECT hire_date
 FROM employees
-WHERE employees.emp_no = '101010');
+WHERE emp_no = '101010');
 
 /*
 Find all the titles ever held by all current employees with the first name Aamod
