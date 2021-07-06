@@ -1,3 +1,42 @@
+
+use germain_1455;
+
+/*
+How much do the current managers of each department get paid, relative to the average salary for the department? Is there any department where the department manager gets paid less than the average salary?
+*/
+
+create temporary table salary_diff as (
+select t1.dept_name, (manager_salary - dept_avg) z_score
+from 
+(select dept_name, salary as manager_salary
+from employees.dept_emp as de
+join employees.dept_manager as dm
+on dm.emp_no = de.emp_no
+and dm.to_date >= now()
+join employees.salaries as s
+on s.emp_no = dm.emp_no
+and s.to_date >= now()
+join employees.departments as d
+on d.dept_no = dm.dept_no) as t1
+join
+(select dept_name, avg(salary) as dept_avg
+from employees.departments d
+join employees.dept_emp de
+using (dept_no)
+join employees.salaries s
+on s.emp_no = de.emp_no
+and s.to_date >=now()
+group by dept_name) as t2
+on t1.dept_name = t2.dept_name
+order by z_score);
+
+update salary_diff as sd
+set sd.z_score = (
+select sd.z_score/(select stddev(hs.salary) from employees.salaries as hs));
+
+select *
+from salary_diff;
+
 use world;
 
 -- What languages are spoken in Santa Monica?
